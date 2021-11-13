@@ -22,6 +22,6 @@ public class RabbitController {
     @POST
     public String sendMessage(String message) throws IOException {
         queueConnection.sendMessage(message);
-        return "Sending Message";
+        return message;
     }
 }

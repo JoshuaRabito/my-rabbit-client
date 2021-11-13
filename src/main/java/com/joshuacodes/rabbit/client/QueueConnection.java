@@ -17,11 +17,14 @@ public class QueueConnection {
 
   private static final String QUEUE_NAME = "idk";
   private static final String EXCHANGE_NAME = "myExchange";
-  private final Channel channel;
-  private final Connection connection;
 
   public QueueConnection()
       throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
+
+  }
+
+
+  public void sendMessage(String message) throws IOException {
     ConnectionFactory factory = new ConnectionFactory();
     factory.setUsername("guest");
     factory.setPassword("guest");
@@ -29,30 +32,15 @@ public class QueueConnection {
     factory.setHost("localhost");
     factory.setPort(5672);
 
-    this.connection = factory.newConnection();
-    this.channel = connection.createChannel();
+    try (Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel()) {
+      channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+      channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
+      System.out.println(" [x] Sent '" + message + "'");
 
-    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-  }
-
-  @PreDestroy
-  public void cleanup(){
-    try {
-      if(this.connection.isOpen()){
-        this.connection.close();
-      }
-
-      if(this.channel.isOpen()){
-        this.channel.close();
-      }
-    } catch (IOException | TimeoutException e) {
+    } catch (TimeoutException e) {
       e.printStackTrace();
     }
-  }
 
-
-  public void sendMessage(String message) throws IOException {
-    channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
-    System.out.println(" [x] Sent '" + message + "'");
   }
 }
