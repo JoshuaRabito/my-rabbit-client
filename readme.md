@@ -1,4 +1,4 @@
-# MicroProfile generated Application
+# MicroProfile Rabbit Client
 
 ## Introduction
 
