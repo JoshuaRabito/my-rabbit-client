@@ -20,8 +20,13 @@ public class RabbitController {
 
     @Path("/send")
     @POST
-    public String sendMessage(String message) throws IOException {
+    public void sendMessage(String message) throws IOException {
         queueConnection.sendMessage(message);
-        return message;
+    }
+    
+    @Path("/recieve")
+    @GET
+    public String pullMessage() throws IOException {
+        return queueConnection.getMessage();
     }
 }
