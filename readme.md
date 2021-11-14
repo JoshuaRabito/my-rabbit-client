@@ -43,3 +43,6 @@ Also, a simple Hello world endpoint is created, have a look at the class **Hello
 More information on MicroProfile can be found [here](https://microprofile.io/)
 
 
+## To setup RabbitMQ
+You can setup rabbitmq with a Docker container by simply going to the command line in the root directory and running `docker-compose up`. 
+
