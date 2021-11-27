@@ -1,6 +1,6 @@
-package com.joshuacodes.rabbit.client;
+package com.joshuacodes.rabbit.client.main;
 
-import javax.inject.Inject;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
