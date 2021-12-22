@@ -22,62 +22,72 @@ import com.rabbitmq.client.ConnectionFactory;
 @ApplicationScoped
 class QueueConnection {
 
-	public static final String QUEUE_NAME = "idk";
-	public static final String EXCHANGE_NAME = "myExchange";
-	private Connection connection;
+  public static final String QUEUE_NAME = "idk";
+  public static final String EXCHANGE_NAME = "myExchange";
+  private Connection connection;
 
-	@Inject
-    @ConfigProperty(name="rabbitHost")
-	private String host;
-	
-	@Inject
-    @ConfigProperty(name="rabbitUser")
-	private String user;
-	
-	@Inject
-    @ConfigProperty(name="rabbitPassword")
-	private String pw;
-	
-	
-	
-	public QueueConnection()
-			throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
+  @Inject
+  @ConfigProperty(name = "rabbitHost")
+  private String host;
 
-	}
+  @Inject
+  @ConfigProperty(name = "rabbitUser")
+  private String user;
 
-	public void init(@Observes @Initialized(ApplicationScoped.class) Object init) throws IOException, TimeoutException {
-		System.out.println("initializing queue connection");
-		ConnectionFactory connectionFactory = createConnectionFactory();
-		this.connection = connectionFactory.newConnection();
-	}
+  @Inject
+  @ConfigProperty(name = "rabbitPassword")
+  private String pw;
 
-	
-	public void destroy( @Observes @Destroyed( ApplicationScoped.class ) Object init ) {
-		try {
-			if (connection.isOpen()) {
-				connection.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+  public QueueConnection()
+      throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
+
+  }
+
+  public void init(@Observes @Initialized(ApplicationScoped.class) Object init) {
+    System.out.println("initializing queue connection");
+    ConnectionFactory connectionFactory = createConnectionFactory();
+    try {
+      this.connection = connectionFactory.newConnection();
+    } catch (IOException e) {
+      System.out.println("error occurred " + e.getMessage());
+
+      e.printStackTrace();
+    } catch (TimeoutException e) {
+      System.out.println("error occurred " + e.getMessage());
+
+      e.printStackTrace();
     }
-	
+  }
 
-	private ConnectionFactory createConnectionFactory() {
-		System.out.println("host is: "+ host);
-		System.out.println("user is: "+ user);
 
-		ConnectionFactory factory = new ConnectionFactory();
-		factory.setUsername(user);
-		factory.setPassword(pw);
-		factory.setVirtualHost("/");
-		factory.setHost(host);
-		factory.setPort(5672);
-		return factory;
-	}
+  public void destroy(@Observes @Destroyed(ApplicationScoped.class) Object init) {
+    try {
+      if (connection.isOpen()) {
+        connection.close();
+      }
+    } catch (IOException e) {
+      System.out.println("error occurred " + e.getMessage());
+      e.printStackTrace();
+    }
+  }
 
-	public Connection getConnection() {
-		return connection;
-	}
+
+  private ConnectionFactory createConnectionFactory() {
+    System.out.println("host is: " + host);
+    System.out.println("user is: " + user);
+
+    ConnectionFactory factory = new ConnectionFactory();
+    factory.setUsername(user);
+    factory.setPassword(pw);
+    factory.setVirtualHost("/");
+    factory.setHost(host);
+    factory.setPort(5672);
+    return factory;
+  }
+
+  public Connection getConnection() {
+    return connection;
+  }
 
 }

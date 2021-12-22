@@ -26,7 +26,7 @@ public class MessageSender {
 		try ( Channel channel = queueConnection.getConnection().createChannel()) {
 			channel.queueDeclare(queueConnection.QUEUE_NAME, false, false, false, null);
 			channel.basicPublish("", queueConnection.QUEUE_NAME, null, message.getBytes());
-			System.out.println(" [x] Sent '" + message + "'");
+			System.out.println("Sent : '" + message + "' to the queue.");
 
 		} catch (TimeoutException e) {
 			e.printStackTrace();

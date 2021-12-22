@@ -8,9 +8,9 @@ COPY . /app
 WORKDIR /app
 
 # package our application code
-RUN mvn clean package 
+RUN mvn -f /app/pom.xml clean package
 
-FROM openjdk:17-jdk-slim
+FROM java:8-jdk
 COPY . /app
 WORKDIR /app/target
 RUN echo 'we are running jar'

@@ -13,33 +13,33 @@ import com.rabbitmq.client.GetResponse;
 
 public class MessageReceiver {
 
-	QueueConnection queueConnection;
+  QueueConnection queueConnection;
 
-	@Inject
-	public MessageReceiver(QueueConnection connection) {
-		super();
-		this.queueConnection = connection;
-	}
+  @Inject
+  public MessageReceiver(QueueConnection connection) {
+    super();
+    this.queueConnection = connection;
+  }
 
-	public String getMessage() throws IOException {
-		try (Channel channel = queueConnection.getConnection().createChannel()) {
-			GetResponse response = channel.basicGet(queueConnection.QUEUE_NAME, true);
-			String message = "";
-			if (response == null) {
-				// No message retrieved.
-			} else {
-				AMQP.BasicProperties props = response.getProps();
-				byte[] body = response.getBody();
-				long deliveryTag = response.getEnvelope().getDeliveryTag();
-				message = new String(body, "UTF-8");
-				System.out.println(" [x] pulled message: '" + message + "'");
+  public String getMessage() throws IOException {
+    try (Channel channel = queueConnection.getConnection().createChannel()) {
+      GetResponse response = channel.basicGet(queueConnection.QUEUE_NAME, true);
+      String message = "";
+      if (response == null) {
+        // No message retrieved.
+      } else {
+        AMQP.BasicProperties props = response.getProps();
+        byte[] body = response.getBody();
+        long deliveryTag = response.getEnvelope().getDeliveryTag();
+        message = new String(body, "UTF-8");
+        System.out.println("pulled message: '" + message + "' from the queue");
 
-			}
-			return message;
-		} catch (TimeoutException e) {
-			throw new IllegalStateException(e);
-		}
+      }
+      return message;
+    } catch (TimeoutException e) {
+      throw new IllegalStateException(e);
+    }
 
-	}
+  }
 
 }
