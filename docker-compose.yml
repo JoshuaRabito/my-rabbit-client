@@ -1,20 +1,35 @@
-version: "3.2"
+version: "3.8"
 services:
+  app:
+    image: rabbitclient
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:9080"
+    networks:
+      - rabbit-network
+    volumes:
+      - ./logs:/var/www/logs
+    env_file:
+      - variables.env
+    depends_on:
+      - rabbitmq
   rabbitmq:
     image: rabbitmq:3-management-alpine
-    container_name: ${rabbitContainerName}
     ports:
       - 5672:5672
       - 15672:15672
+    networks:
+      - rabbit-network
     volumes:
-      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq/
+      - ./data/:/var/lib/rabbitmq/
+      - ./logs/rabbitmq/:/var/log/rabbitmq/
     env_file:
       - variables.env
-  my-rabbit-client:
-    image: my-rabbit-client
-    container_name: ${clientContainerName}
-    ports:
-      - 9080:9080
-    env_file:
-      - variables.env
+    environment:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+networks:
+  rabbit-network:
+    driver: bridge

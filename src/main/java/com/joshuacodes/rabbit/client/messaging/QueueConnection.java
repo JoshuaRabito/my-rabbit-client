@@ -11,6 +11,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -22,6 +26,20 @@ class QueueConnection {
 	public static final String EXCHANGE_NAME = "myExchange";
 	private Connection connection;
 
+	@Inject
+    @ConfigProperty(name="rabbitHost")
+	private String host;
+	
+	@Inject
+    @ConfigProperty(name="rabbitUser")
+	private String user;
+	
+	@Inject
+    @ConfigProperty(name="rabbitPassword")
+	private String pw;
+	
+	
+	
 	public QueueConnection()
 			throws IOException, TimeoutException, NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
 
@@ -46,11 +64,14 @@ class QueueConnection {
 	
 
 	private ConnectionFactory createConnectionFactory() {
+		System.out.println("host is: "+ host);
+		System.out.println("user is: "+ user);
+
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setUsername("guest");
-		factory.setPassword("guest");
+		factory.setUsername(user);
+		factory.setPassword(pw);
 		factory.setVirtualHost("/");
-		factory.setHost("localhost");
+		factory.setHost(host);
 		factory.setPort(5672);
 		return factory;
 	}

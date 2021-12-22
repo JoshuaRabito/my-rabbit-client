@@ -7,7 +7,6 @@ COPY . /app
 
 WORKDIR /app
 
-
 # package our application code
 RUN mvn clean package 
 
@@ -15,7 +14,6 @@ FROM openjdk:17-jdk-slim
 COPY . /app
 WORKDIR /app/target
 RUN echo 'we are running jar'
-EXPOSE 9080
 
 
 # set the startup command to execute the jar
